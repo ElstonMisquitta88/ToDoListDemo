@@ -1,0 +1,6 @@
+(1) Creation of a Data Access Layer with Dapper
+In this we create a SQL data layer
+&
+Another class to user this sql data layer
+
+(2) Create a table and Proc to fetch data

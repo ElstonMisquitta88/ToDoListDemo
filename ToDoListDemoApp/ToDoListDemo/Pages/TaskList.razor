@@ -1,0 +1,71 @@
+﻿@page "/TaskList"
+<h3>TaskList</h3>
+
+@using DataAccess
+@using DataAccess.DataModels
+
+@inject IAddToListData _db
+
+<h4>Insert New To Do List Add</h4>
+<EditForm Model="@NewTodo" OnValidSubmit="@InsertPerson">
+    <InputText id="firstName" @bind-Value="NewTodo.TaskName" />
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+
+
+@if (ToListDisplay is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <ul class="list-group">
+    @foreach (var task in ToListDisplay)
+    {
+        @if (task.Iscompleted)
+        {
+
+                <li class="list-group-item list-group-item-secondary my-1">
+               <del>
+                    @task.TaskName
+                </del>
+            </li>
+        }
+        else
+        {
+           <li class="list-group-item list-group-item-success my-1">
+             
+                    @task.TaskName
+               
+            </li>
+        }
+
+    }
+    </ul>
+}
+
+@code {
+    private List<ToDoListModel> ToListDisplay;
+
+    private ToDoListModel NewTodo = new ToDoListModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ToListDisplay = await _db.GetToDoList();
+    }
+
+
+    private async Task InsertPerson()
+    {
+        ToDoListModel p = new ToDoListModel
+            {
+                TaskName = NewTodo.TaskName,
+                Iscompleted=false 
+            };
+
+        await _db.AddDataToList(p);
+        ToListDisplay.Add(p);
+        NewTodo = new ToDoListModel();
+    }
+}
